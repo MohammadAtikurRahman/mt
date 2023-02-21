@@ -19,7 +19,9 @@ playPauseButton.addEventListener('click', () => {
   }
 })
 
-
+volumeBar.addEventListener('input', () => {
+    videoPlayer.volume = volumeBar.value;
+  });
 
 
 // Seek bar functionality
@@ -56,7 +58,11 @@ fullScreenButton.addEventListener('click', () => {
     isFullScreen = true
   }
 })
-
+// Volume bar functionality
+volumeBar.addEventListener('input', () => {
+    videoPlayer.volume = volumeBar.value;
+  });
+  
 // Format time function
 function formatTime (time) {
   const minutes = Math.floor(time / 60)

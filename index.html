@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Video Player</title>
     <style>
       video {
@@ -17,34 +17,83 @@
     </div>
     <div>
       <button id="play-pause-button">Play</button>
-      <input type="range" id="seek-bar" min="0" max="100" step="0.1" value="0">
-      <span id="current-time-display">0:00</span>/<span id="duration-display">0:00</span>
-      <input type="range" id="volume-bar" min="0" max="1" step="0.1" value="1">
+      <input
+        type="range"
+        id="seek-bar"
+        min="0"
+        max="100"
+        step="0.1"
+        value="0"
+      />
+      <span id="current-time-display">0:00</span>/<span id="duration-display"
+        >0:00</span
+      >
+      <input
+        type="range"
+        id="volume-bar"
+        min="0"
+        max="1"
+        step="0.1"
+        value="1"
+      />
       <button id="full-screen-button">Full Screen</button>
     </div>
-    <script >
-      $(document).ready(function() {
+    <script>
+      $(document).ready(function () {
         // Handle drag and drop events on the video player
-        var videoPlayer = document.getElementById('video-player');
-        $('#video-container').on('dragover', function(e) {
+
+        var volumeBar = document.getElementById('volume-bar');
+
+
+        var videoPlayer = document.getElementById("video-player");
+        $("#video-container").on("dragover", function (e) {
           e.preventDefault();
         });
-        $('#video-container').on('drop', function(e) {
+        $("#video-container").on("drop", function (e) {
           e.preventDefault();
           var file = e.originalEvent.dataTransfer.files[0];
           var fileURL = URL.createObjectURL(file);
           videoPlayer.src = fileURL;
-          $('#play-pause-button').text('Play');
+          $("#play-pause-button").text("Play");
         });
-        
+
         // Other video player functionality
-        $('#play-pause-button').click(function() {
+        $("#play-pause-button").click(function () {
           if (videoPlayer.paused) {
             videoPlayer.play();
-            $(this).text('Pause');
+            $(this).text("Pause");
           } else {
             videoPlayer.pause();
-            $(this).text('Play');
+            $(this).text("Play");
+          }
+        });
+        // Full screen functionality
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        var fullScreenButton = document.getElementById("full-screen-button");
+        fullScreenButton.addEventListener("click", function () {
+          if (!document.fullscreenElement) {
+            videoPlayer.requestFullscreen();
+            fullScreenButton.innerText = "Full Screen";
+          } else {
+            if (document.exitFullscreen) {
+              document.exitFullscreen();
+              fullScreenButton.innerText = "Full Screen";
+            }
           }
         });
         // Rest of the code...
