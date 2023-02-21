@@ -1,110 +1,54 @@
 <!DOCTYPE html>
 <html>
-
-<head>
+  <head>
     <meta charset="UTF-8">
-    <title>Electron Video Player</title>
+    <title>Video Player</title>
     <style>
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-        }
-
-        #video-container {
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        video {
-            max-height: 100%;
-            max-width: 100%;
-        }
-
-        #controls {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 60px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            padding: 10px;
-            box-sizing: border-box;
-            font-family: sans-serif;
-        }
-
-        #controls button {
-            border: none;
-            background: none;
-            cursor: pointer;
-            color: white;
-            font-size: 20px;
-            margin: 0 10px;
-        }
-
-        #controls button:focus {
-            outline: none;
-        }
-
-        #controls input[type="range"] {
-            width: 200px;
-        }
-
-        #playlist {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 200px;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            padding: 10px;
-            box-sizing: border-box;
-            font-family: sans-serif;
-            overflow-y: scroll;
-        }
-
-        #playlist ul {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        #playlist ul li {
-            cursor: pointer;
-            margin: 5px 0;
-        }
-
-        #playlist ul li.active {
-            font-weight: bold;
-        }
+      video {
+        width: 100%;
+        height: auto;
+      }
     </style>
-</head>
-
-<body>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </head>
+  <body>
     <div id="video-container">
-        <video id="video" preload="metadata">
-            <source id="source" type="video/mp4">
-        </video>
+      <video id="video-player"></video>
     </div>
-    <div id="controls">
-        <button id="play-pause-btn">Play</button>
-        <input type="range" id="seek-bar" min="0" step="0.1">
-        <div id="time-display">00:00 / 00:00</div>
-        <button id="mute-btn">Mute</button>
-        <input type="range" id="volume-bar" min="0" max="1" step="0.1" value="1">
-        <button id="fullscreen-btn">Fullscreen</button>
+    <div>
+      <button id="play-pause-button">Play</button>
+      <input type="range" id="seek-bar" min="0" max="100" step="0.1" value="0">
+      <span id="current-time-display">0:00</span>/<span id="duration-display">0:00</span>
+      <input type="range" id="volume-bar" min="0" max="1" step="0.1" value="1">
+      <button id="full-screen-button">Full Screen</button>
     </div>
-    <div id="playlist">
-        <ul id="playlist-items"></ul>
-    </div>
-
-    <script src="./renderer.js"></script>
-</body>
-
+    <script >
+      $(document).ready(function() {
+        // Handle drag and drop events on the video player
+        var videoPlayer = document.getElementById('video-player');
+        $('#video-container').on('dragover', function(e) {
+          e.preventDefault();
+        });
+        $('#video-container').on('drop', function(e) {
+          e.preventDefault();
+          var file = e.originalEvent.dataTransfer.files[0];
+          var fileURL = URL.createObjectURL(file);
+          videoPlayer.src = fileURL;
+          $('#play-pause-button').text('Play');
+        });
+        
+        // Other video player functionality
+        $('#play-pause-button').click(function() {
+          if (videoPlayer.paused) {
+            videoPlayer.play();
+            $(this).text('Pause');
+          } else {
+            videoPlayer.pause();
+            $(this).text('Play');
+          }
+        });
+        // Rest of the code...
+      });
+    </script>
+  </body>
 </html>

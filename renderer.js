@@ -1,70 +1,66 @@
-const { ipcRenderer } = require('electron');
-const videoPlayer = document.getElementById('videoPlayer');
-const playBtn = document.getElementById('playBtn');
-const pauseBtn = document.getElementById('pauseBtn');
-const seekBar = document.getElementById('seekBar');
-const currentTime = document.getElementById('currentTime');
-const duration = document.getElementById('duration');
-const fullscreenBtn = document.getElementById('fullscreenBtn');
-const volumeBar = document.getElementById('volumeBar');
+const videoPlayer = document.getElementById('video-player')
+const playPauseButton = document.getElementById('play-pause-button')
+const seekBar = document.getElementById('seek-bar')
+const currentTimeDisplay = document.getElementById('current-time-display')
+const durationDisplay = document.getElementById('duration-display')
+const volumeBar = document.getElementById('volume-bar')
+const fullScreenButton = document.getElementById('full-screen-button')
 
-let isSeeking = false;
+let isFullScreen = false
 
-// When the page loads, ask the main process for the video file path
-ipcRenderer.send('get-video-file');
+// Play/Pause button functionality
+playPauseButton.addEventListener('click', () => {
+  if (videoPlayer.paused) {
+    videoPlayer.play()
+    playPauseButton.innerText = 'Pause'
+  } else {
+    videoPlayer.pause()
+    playPauseButton.innerText = 'Play'
+  }
+})
 
-// When the main process responds with the file path, load the video
-ipcRenderer.on('video-file', (event, filePath) => {
-    videoPlayer.src = `file://${filePath}`;
-    videoPlayer.load();
-});
 
-// Play the video when the Play button is clicked
-playBtn.addEventListener('click', () => {
-    videoPlayer.play();
-});
 
-// Pause the video when the Pause button is clicked
-pauseBtn.addEventListener('click', () => {
-    videoPlayer.pause();
-});
 
-// Update the seek bar and time display as the video plays
-videoPlayer.addEventListener('timeupdate', () => {
-    if (!isSeeking) {
-        seekBar.value = videoPlayer.currentTime / videoPlayer.duration;
-        currentTime.textContent = formatTime(videoPlayer.currentTime);
-        duration.textContent = formatTime(videoPlayer.duration);
-    }
-});
-
-// Seek the video when the seek bar is changed
+// Seek bar functionality
 seekBar.addEventListener('input', () => {
-    const seekTime = videoPlayer.duration * seekBar.value;
-    videoPlayer.currentTime = seekTime;
-});
+  const seekTime = (videoPlayer.duration * (seekBar.value / 100))
+  videoPlayer.currentTime = seekTime
+})
 
-// Update the volume as the volume bar is changed
+// Update current time and duration display
+videoPlayer.addEventListener('timeupdate', () => {
+  const currentTime = videoPlayer.currentTime
+  const duration = videoPlayer.duration
+
+  currentTimeDisplay.innerText = formatTime(currentTime)
+  durationDisplay.innerText = formatTime(duration)
+
+  seekBar.value = (currentTime / duration) * 100
+})
+
+// Volume bar functionality
 volumeBar.addEventListener('input', () => {
-    videoPlayer.volume = volumeBar.value;
-});
+  videoPlayer.volume = volumeBar.value
+})
 
-// Toggle fullscreen mode when the Fullscreen button is clicked
-fullscreenBtn.addEventListener('click', () => {
-    if (!document.fullscreenElement) {
-        videoPlayer.requestFullscreen();
-    } else {
-        document.exitFullscreen();
-    }
-});
+// Full screen functionality
+fullScreenButton.addEventListener('click', () => {
+  if (isFullScreen) {
+    document.exitFullscreen()
+    fullScreenButton.innerText = 'Full Screen'
+    isFullScreen = false
+  } else {
+    videoPlayer.requestFullscreen()
+    fullScreenButton.innerText = 'Exit Full Screen'
+    isFullScreen = true
+  }
+})
 
-// Format a time in seconds to MM:SS format
-function formatTime(seconds) {
-    const minutes = Math.floor(seconds / 60);
-    const secondsRemainder = Math.floor(seconds % 60);
-    const paddedSeconds = secondsRemainder.toString().padStart(2, '0');
-    return `${minutes}:${paddedSeconds}`;
+// Format time function
+function formatTime (time) {
+  const minutes = Math.floor(time / 60)
+  const seconds = Math.floor(time - (minutes * 60))
+  const secondsWithLeadingZero = String(seconds).padStart(2, '0')
+  return `${minutes}:${secondsWithLeadingZero}`
 }
-
-// Set the initial volume to the maximum value
-videoPlayer.volume = volumeBar.value;
