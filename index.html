@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Electron Video Player</title>
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+        }
+
+        #video-container {
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        video {
+            max-height: 100%;
+            max-width: 100%;
+        }
+
+        #controls {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 10px;
+            box-sizing: border-box;
+            font-family: sans-serif;
+        }
+
+        #controls button {
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: white;
+            font-size: 20px;
+            margin: 0 10px;
+        }
+
+        #controls button:focus {
+            outline: none;
+        }
+
+        #controls input[type="range"] {
+            width: 200px;
+        }
+
+        #playlist {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 10px;
+            box-sizing: border-box;
+            font-family: sans-serif;
+            overflow-y: scroll;
+        }
+
+        #playlist ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #playlist ul li {
+            cursor: pointer;
+            margin: 5px 0;
+        }
+
+        #playlist ul li.active {
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="video-container">
+        <video id="video" preload="metadata">
+            <source id="source" type="video/mp4">
+        </video>
+    </div>
+    <div id="controls">
+        <button id="play-pause-btn">Play</button>
+        <input type="range" id="seek-bar" min="0" step="0.1">
+        <div id="time-display">00:00 / 00:00</div>
+        <button id="mute-btn">Mute</button>
+        <input type="range" id="volume-bar" min="0" max="1" step="0.1" value="1">
+        <button id="fullscreen-btn">Fullscreen</button>
+    </div>
+    <div id="playlist">
+        <ul id="playlist-items"></ul>
+    </div>
+
+    <script src="./renderer.js"></script>
+</body>
+
+</html>
